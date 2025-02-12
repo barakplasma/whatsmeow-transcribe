@@ -27,12 +27,20 @@ builds:
       - arm64
 
 kos:
-  repositories:
+  - repositories:
       - ghcr.io/barakplasma/whatsmeow-transcribe
       - ghcr.io/hoehermann/whatsmeow-transcribe
+    tags:
+      - "{{.Version}}"
+      - latest
+    bare: true
+    preserve_import_paths: false
+    platforms:
+      - linux/amd64
+      - linux/arm64
 
 archives:
-  - format: tar.gz
+  - formats: [ 'tar.gz' ]
     # this name template makes the OS and Arch compatible with the results of `uname`.
     name_template: >-
       {{ .ProjectName }}_
@@ -44,7 +52,7 @@ archives:
     # use zip for windows archives
     format_overrides:
       - goos: windows
-        format: zip
+      - formats: [ 'zip' ]
 
 changelog:
   sort: asc
