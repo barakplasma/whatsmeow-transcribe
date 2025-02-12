@@ -29,6 +29,9 @@ builds:
 kos:
   - repository: ghcr.io/barakplasma/whatsmeow-transcribe
 
+kos:
+  - repository: ghcr.io/hoehermann/whatsmeow-transcribe
+
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of `uname`.
