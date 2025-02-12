@@ -27,10 +27,9 @@ builds:
       - arm64
 
 kos:
-  - repository: ghcr.io/barakplasma/whatsmeow-transcribe
-
-kos:
-  - repository: ghcr.io/hoehermann/whatsmeow-transcribe
+  repositories:
+      - ghcr.io/barakplasma/whatsmeow-transcribe
+      - ghcr.io/hoehermann/whatsmeow-transcribe
 
 archives:
   - format: tar.gz
