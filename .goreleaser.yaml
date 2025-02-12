@@ -29,7 +29,7 @@ builds:
 kos:
   - repositories:
       - ghcr.io/barakplasma/whatsmeow-transcribe
-      - ghcr.io/hoehermann/whatsmeow-transcribe
+      # - ghcr.io/hoehermann/whatsmeow-transcribe
     tags:
       - "{{.Version}}"
       - latest
