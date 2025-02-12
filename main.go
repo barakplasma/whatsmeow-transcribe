@@ -21,7 +21,7 @@ import (
 	"strings"
 	"syscall"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 	"github.com/mdp/qrterminal/v3"
 	"google.golang.org/protobuf/proto"
 
@@ -42,8 +42,8 @@ var quitter = make(chan struct{})
 
 var logLevel = "INFO"
 var debugLogs = flag.Bool("debug", false, "Enable debug logs?")
-var dbDialect = flag.String("db-dialect", "sqlite3", "Database dialect (sqlite3 or postgres)")
-var dbAddress = flag.String("db-address", "file:whatsmeow.db?_foreign_keys=on", "Database address")
+var dbDialect = flag.String("db-dialect", "sqlite", "Database dialect (sqlite or postgres)")
+var dbAddress = flag.String("db-address", "file:whatsmeow.db?_foreign_keys=on&_pragma=foreign_keys(1)", "Database address")
 var apiUrl = flag.String("api-url", "https://api.openai.com/v1/audio/transcriptions", "Transcription API URL")
 var apiKey = flag.String("api-key", "", "Transcription API Key")
 var messageHead = flag.String("message-head", "Transcript:\n> ", "Text to start message with")
@@ -157,31 +157,31 @@ func handler(rawEvt interface{}) {
 
 		log.Infof("Received message %s from %s (%s).", evt.Info.ID, evt.Info.SourceString(), strings.Join(metaParts, ", "))
 
-		am := evt.Message.GetAudioMessage()
-		if am != nil {
-			audio_data, err := cli.Download(am)
-			if err != nil {
-				log.Errorf("Failed to download audio: %v", err)
-				return
-			}
-			if am.GetPTT() {
-				maybeText := getTranscription(audio_data)
-				if maybeText != nil {
-					text := *maybeText
-					msg := &waProto.Message{
-						ExtendedTextMessage: &waProto.ExtendedTextMessage{
-							Text: proto.String(*messageHead + text),
-							ContextInfo: &waProto.ContextInfo{
-								StanzaID:      proto.String(evt.Info.ID),
-								Participant:   proto.String(evt.Info.Sender.ToNonAD().String()),
-								QuotedMessage: evt.Message,
-							},
-						},
-					}
-					_, _ = cli.SendMessage(context.Background(), evt.Info.MessageSource.Chat, msg)
-				}
-			}
-		}
+		// am := evt.Message.GetAudioMessage()
+		// if am != nil {
+		// 	audio_data, err := cli.Download(am)
+		// 	if err != nil {
+		// 		log.Errorf("Failed to download audio: %v", err)
+		// 		return
+		// 	}
+		// 	if am.GetPTT() {
+		// 		maybeText := getTranscription(audio_data)
+		// 		if maybeText != nil {
+		// 			text := *maybeText
+		// 			msg := &waProto.Message{
+		// 				ExtendedTextMessage: &waProto.ExtendedTextMessage{
+		// 					Text: proto.String(*messageHead + text),
+		// 					ContextInfo: &waProto.ContextInfo{
+		// 						StanzaID:      proto.String(evt.Info.ID),
+		// 						Participant:   proto.String(evt.Info.Sender.ToNonAD().String()),
+		// 						QuotedMessage: evt.Message,
+		// 					},
+		// 				},
+		// 			}
+		// 			_, _ = cli.SendMessage(context.Background(), evt.Info.MessageSource.Chat, msg)
+		// 		}
+		// 	}
+		// }
 	}
 }
 
